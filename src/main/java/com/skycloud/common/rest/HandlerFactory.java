@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Resource(name="HandlerFactory")
 public class HandlerFactory {
 
-    private final PathTrie<RestHandler> getHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
-    private final PathTrie<RestHandler> postHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
-    private final PathTrie<RestHandler> putHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
-    private final PathTrie<RestHandler> deleteHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
-    private final PathTrie<RestHandler> headHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
-    private final PathTrie<RestHandler> optionsHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> getHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> postHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> putHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> deleteHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> headHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
+    private final static PathTrie<RestHandler> optionsHandlers = new PathTrie<RestHandler>(RestUtils.REST_DECODER);
     
-    public void registerHandler(RequestMethod method, String path, RestHandler handler) {
+    public static synchronized void registerHandler(RequestMethod method, String path, RestHandler handler) {
         switch (method) {
             case GET:
                 getHandlers.insert(path, handler);
@@ -49,7 +49,7 @@ public class HandlerFactory {
     }
     
     @SuppressWarnings("unchecked")
-    public RestHandler getHandler(HttpServletRequest request) {
+    public static synchronized RestHandler getHandler(HttpServletRequest request) {
         String path = getPath(request);
         RequestMethod method = RequestMethod.valueOf(request.getMethod());
         
@@ -71,7 +71,7 @@ public class HandlerFactory {
         }
     }
     
-    private String getPath(HttpServletRequest request) {
+    private static String getPath(HttpServletRequest request) {
         return request.getPathInfo();
     }
 }

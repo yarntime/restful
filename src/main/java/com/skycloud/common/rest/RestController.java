@@ -25,26 +25,24 @@ import com.skycloud.common.response.ResponseInfo;
 
 
 @Controller
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v1/**")
 public class RestController {
 
     private static Logger LOGGER = Logger.getLogger(RestController.class);
 
     private static Gson gson = new Gson();
 
-    HandlerFactory handerFactory;
-
-    @RequestMapping(value = "/",
-            method = RequestMethod.GET)
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
     public void getResources(HttpServletRequest request, HttpServletResponse response) {
         ResponseInfo responseInfo = new ResponseInfo();
         try {
-            RestHandler handler = handerFactory.getHandler(request);
+            request.getParameterMap().put("zw", new String[]{"zw"});
+            RestHandler handler = HandlerFactory.getHandler(request);
             Object result = handler.handleRequest(request);
             responseInfo.setResult(result);
             responseInfo.setCode(ResponseCode.SUCCESS);
         } catch (Exception e) {
-            LOGGER.error("failed to list stacks cause by " + e.getMessage());
+            LOGGER.error("failed to handle request cause by " + e.getMessage());
             responseInfo.setMessage(e.getMessage());
             responseInfo.setCode(ResponseCode.FAILURE);
         }

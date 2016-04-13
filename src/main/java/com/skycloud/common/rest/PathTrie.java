@@ -1,3 +1,7 @@
+/**
+ * use path trie to handle request path
+ */
+
 package com.skycloud.common.rest;
 
 import static java.util.Collections.emptyMap;
@@ -6,6 +10,7 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.skycloud.common.exception.RestException;
 import com.skycloud.common.utils.StringUtils;
 
 /**
@@ -29,7 +34,7 @@ public class PathTrie<T> {
     public PathTrie(char separator, String wildcard, Decoder decoder) {
         this.decoder = decoder;
         this.separator = separator;
-        root = new TrieNode(new String(new char[]{separator}), null, wildcard);
+        root = new TrieNode(new String(new char[] {separator}), null, wildcard);
     }
 
     public class TrieNode {
@@ -122,9 +127,20 @@ public class PathTrie<T> {
             return namedWildcard != null;
         }
 
+        public String getValue(String[] path) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < path.length; ++i) {
+                sb.append(path[i]);
+                sb.append("/");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }
+
         public T retrieve(String[] path, int index, Map<String, String> params) {
-            if (index >= path.length)
-                return null;
+            if (index >= path.length) {
+                throw new RestException("failed to retrieve path " + getValue(path));
+            }
 
             String token = path[index];
             TrieNode node = children.get(token);
@@ -132,13 +148,15 @@ public class PathTrie<T> {
             if (node == null) {
                 node = children.get(wildcard);
                 if (node == null) {
-                    return null;
+                    throw new RestException("failed to retrieve path " + getValue(path));
                 }
                 usedWildcard = true;
             } else {
-                // If we are at the end of the path, the current node does not have a value but there
+                // If we are at the end of the path, the current node does not have a value but
+                // there
                 // is a child wildcard node, use the child wildcard node
-                if (index + 1 == path.length && node.value == null && children.get(wildcard) != null) {
+                if (index + 1 == path.length && node.value == null
+                        && children.get(wildcard) != null) {
                     node = children.get(wildcard);
                     usedWildcard = true;
                 } else {
@@ -166,7 +184,8 @@ public class PathTrie<T> {
 
         private void put(Map<String, String> params, TrieNode node, String value) {
             if (params != null && node.isNamedWildcard()) {
-                params.put(node.namedWildcard(), decoder.decode(value));
+                String as = decoder.decode(value);
+                params.put(node.namedWildcard(), as);
             }
         }
 
