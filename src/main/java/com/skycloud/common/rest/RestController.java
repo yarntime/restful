@@ -36,7 +36,6 @@ public class RestController {
     public void getResources(HttpServletRequest request, HttpServletResponse response) {
         ResponseInfo responseInfo = new ResponseInfo();
         try {
-            request.getParameterMap().put("zw", new String[]{"zw"});
             RestHandler handler = HandlerFactory.getHandler(request);
             Object result = handler.handleRequest(request);
             responseInfo.setResult(result);
