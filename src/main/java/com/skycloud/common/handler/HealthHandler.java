@@ -9,11 +9,11 @@
 package com.skycloud.common.handler;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.skycloud.common.rest.ApiHttpServletRequest;
 import com.skycloud.common.rest.HandlerFactory;
 import com.skycloud.common.rest.RestHandler;
 
@@ -24,10 +24,11 @@ public class HealthHandler implements RestHandler {
     public void registePath() {
         HandlerFactory.registerHandler(RequestMethod.GET, "v1/health", this);
         HandlerFactory.registerHandler(RequestMethod.POST, "v1/health", this);
+        HandlerFactory.registerHandler(RequestMethod.GET, "v1/{namespace}/health", this);
     }
 
     @Override
-    public Object handleRequest(HttpServletRequest request) {
-        return "I'm OK";
+    public Object handleRequest(ApiHttpServletRequest request) {
+        return "I'm OK, namespace is " + request.getPathParam("namespace");
     }
 }

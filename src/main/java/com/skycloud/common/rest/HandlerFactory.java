@@ -49,23 +49,23 @@ public class HandlerFactory {
     }
     
     @SuppressWarnings("unchecked")
-    public static synchronized RestHandler getHandler(HttpServletRequest request) {
+    public static synchronized RestHandler getHandler(ApiHttpServletRequest request) {
         String path = getPath(request);
         RequestMethod method = RequestMethod.valueOf(request.getMethod());
         
         switch (method) {
             case GET:
-                return getHandlers.retrieve(path, request.getParameterMap());
+                return getHandlers.retrieve(path, request.getPathParamMap());
             case DELETE:
-                return deleteHandlers.retrieve(path, request.getParameterMap());
+                return deleteHandlers.retrieve(path, request.getPathParamMap());
             case POST:
-                return postHandlers.retrieve(path, request.getParameterMap());
+                return postHandlers.retrieve(path, request.getPathParamMap());
             case PUT:
-                return putHandlers.retrieve(path, request.getParameterMap());
+                return putHandlers.retrieve(path, request.getPathParamMap());
             case OPTIONS:
-                return optionsHandlers.retrieve(path, request.getParameterMap());
+                return optionsHandlers.retrieve(path, request.getPathParamMap());
             case HEAD:
-                return headHandlers.retrieve(path, request.getParameterMap());
+                return headHandlers.retrieve(path, request.getPathParamMap());
             default:
                 throw new IllegalArgumentException("Can't handle [" + method + "] for path [" + path + "]");
         }

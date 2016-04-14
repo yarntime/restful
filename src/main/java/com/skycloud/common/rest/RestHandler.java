@@ -8,9 +8,7 @@
  */
 package com.skycloud.common.rest;
 
-import javax.servlet.http.HttpServletRequest;
-
 public interface RestHandler {
 
-    Object handleRequest(HttpServletRequest request);
+    Object handleRequest(ApiHttpServletRequest request);
 }

@@ -35,9 +35,10 @@ public class RestController {
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
     public void getResources(HttpServletRequest request, HttpServletResponse response) {
         ResponseInfo responseInfo = new ResponseInfo();
+        ApiHttpServletRequest apiRequest = (ApiHttpServletRequest) request;
         try {
-            RestHandler handler = HandlerFactory.getHandler(request);
-            Object result = handler.handleRequest(request);
+            RestHandler handler = HandlerFactory.getHandler(apiRequest);
+            Object result = handler.handleRequest(apiRequest);
             responseInfo.setResult(result);
             responseInfo.setCode(ResponseCode.SUCCESS);
         } catch (Exception e) {
