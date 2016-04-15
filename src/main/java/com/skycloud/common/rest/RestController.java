@@ -1,6 +1,6 @@
 /**
  * 
- * Base Controller contains some common methods
+ * Base Controller handle exceptions and generate response for all requests
  *
  * @author: zhangwei
  * @date: Mar 24, 2016
@@ -37,8 +37,7 @@ public class RestController {
         ResponseInfo responseInfo = new ResponseInfo();
         ApiHttpServletRequest apiRequest = (ApiHttpServletRequest) request;
         try {
-            RestHandler handler = HandlerFactory.getHandler(apiRequest);
-            Object result = handler.handleRequest(apiRequest);
+            Object result = HandlerFactory.getHandler(apiRequest).handleRequest(apiRequest);
             responseInfo.setResult(result);
             responseInfo.setCode(ResponseCode.SUCCESS);
         } catch (Exception e) {
