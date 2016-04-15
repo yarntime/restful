@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.skycloud.common.utils.PathTrie;
+import com.skycloud.common.utils.RestUtils;
+
 @Resource(name="HandlerFactory")
 public class HandlerFactory {
 
